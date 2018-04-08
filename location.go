@@ -175,7 +175,7 @@ func (l *LocationsResp) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// Locations searchs for locations.
+// Locations searches for locations.
 //
 // Search for Zomato locations by keyword.
 // Provide coordinates to get better search results.
