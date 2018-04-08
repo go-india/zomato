@@ -1,0 +1,1784 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Zomato Public API",
+        "version": "1.0.0",
+        "title": "Zomato API",
+        "termsOfService": "https://www.zomato.com/conditions",
+        "contact": {
+            "email": "api@zomato.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        }
+    },
+    "host": "developers.zomato.com",
+    "basePath": "/api/v2.1",
+    "tags": [
+        {
+            "name": "Common",
+            "description": "common",
+            "externalDocs": {
+                "description": "Find out more",
+                "url": "http://www.zomato.com"
+            }
+        },
+        {
+            "name": "Restaurant",
+            "description": "restaurant"
+        },
+        {
+            "name": "Location",
+            "description": "location"
+        }
+    ],
+    "schemes":[
+        "https"
+    ],
+    "paths": {
+        "/locations" :{
+            "get": {
+                "tags": [
+                    "location"
+                    ],
+                "summary": "Search for locations",
+                "description": "Search for Zomato locations by keyword. Provide coordinates to get better search results",
+                "operationId": "locations",
+                "produces": [
+                    "application/json",
+                "application/xml"
+                    ],
+                "parameters": [
+                {
+                    "name": "user-key",
+                    "in": "header",
+                    "description": "your API key",
+                    "required": true,
+                    "type": "string"
+                },
+                {
+                    "name": "query",
+                    "in": "query",
+                    "description": "suggestion for location name",
+                    "required": true,
+                    "type": "string"
+                },
+                {
+                    "name": "lat",
+                    "in": "query",
+                    "description": "latitude",
+                    "required": false,
+                    "type": "number"
+                },
+                {
+                    "name": "lon",
+                    "in": "query",
+                    "description": "longitude",
+                    "required": false,
+                    "type": "number"
+                },
+                {
+                    "name": "count",
+                    "in": "query",
+                    "description": "max number of results to fetch",
+                    "required": false,
+                    "type": "integer"
+                }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/Location"
+                        }
+                    },
+                    "403": {
+                        "description": "Invalid API key"
+                    }
+                }
+            }
+        },
+        "/location_details": {
+            "get": {
+                "tags": [
+                    "location"
+                    ],
+                "summary": "Get Zomato location details",
+                "description": "Get Foodie Index, Nightlife Index, Top Cuisines and Best rated restaurants in a given location",
+                "operationId": "location_details",
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                    ],
+                "parameters": [
+                {
+                    "name": "user-key",
+                    "in": "header",
+                    "description": "your API key",
+                    "required": true,
+                    "type": "string"
+                },
+                {
+                    "name": "entity_id",
+                    "in": "query",
+                    "description": "location id obtained from locations api",
+                    "required": true,
+                    "type": "integer"
+                },
+                {
+                    "name": "entity_type",
+                    "in": "query",
+                    "description": "location type obtained from locations api",
+                    "required": true,
+                    "type": "string"
+                }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/LocationDetails"
+                        }
+                    },
+                    "403": {
+                        "description": "Invalid API key"
+                    }
+                }
+            }
+        },
+        "/cuisines": {
+            "get": {
+                "tags": [
+                    "common"
+                    ],
+                "summary": "Get list of all cuisines in a city",
+                "description": "Get a list of all cuisines of restaurants listed in a city. The location/city input can be provided in the following ways -<br><ol><li>Using Zomato City ID<li>Using coordinates of any location within a city</ol><p>List of all restaurants serving a particular cuisine can be obtained using '/search' API with cuisine ID and location details</p>",
+                "operationId": "cuisines",
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                    ],
+                "parameters": [
+                {
+                    "name": "user-key",
+                    "in": "header",
+                    "description": "your API key",
+                    "required": true,
+                    "type": "string"
+                },
+                {
+                    "name": "city_id",
+                    "in": "query",
+                    "description": "id of the city for which cuisines are needed",
+                    "required": false,
+                    "type": "integer",
+                    "collectionFormat": "csv"
+                },
+                {
+                    "name": "lat",
+                    "in": "query",
+                    "description": "latitude / longitude of any point within a city",
+                    "required": false,
+                    "type": "number"
+                },
+                {
+                    "name": "lon",
+                    "in": "query",
+                    "description": "latitude / longitude of any point within a city",
+                    "required": false,
+                    "type": "number"
+                }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Cuisine"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Invalid API key"
+                    }
+                }
+            }
+        },
+        "/collections": {
+            "get": {
+                "tags": [
+                    "common"
+                    ],
+                "summary": "Get Zomato collections in a city",
+                "description": "Returns Zomato Restaurant Collections in a City. The location/City input can be provided in the following ways -<br><ol><li>Using Zomato City ID <li>Using coordinates of any location within a city</ol><p>List of all restaurants listed in any particular Zomato Collection can be obtained using the '/search' API with Collection ID and Zomato City ID as the input</p>",
+                "operationId": "collections",
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                    ],
+                "parameters": [
+                {
+                    "name": "user-key",
+                    "in": "header",
+                    "description": "your API key",
+                    "required": true,
+                    "type": "string"
+                },
+                {
+                    "name": "city_id",
+                    "in": "query",
+                    "description": "id of the city for which collections are needed",
+                    "required": false,
+                    "type": "integer"
+                },
+                {
+                    "name": "lat",
+                    "in": "query",
+                    "description": "latitude / longitude of any point within a city",
+                    "required": false,
+                    "type": "number"
+                },
+                {
+                    "name": "lon",
+                    "in": "query",
+                    "description": "latitude / longitude of any point within a city",
+                    "required": false,
+                    "type": "number"
+                },
+                {
+                    "name": "count",
+                    "in": "query",
+                    "description": "max number of results needed",
+                    "required": false,
+                    "type": "integer"
+                }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Collection"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Invalid city_id"
+                    }
+                }
+            }
+        },
+        "/cities": {
+            "get": {
+                "tags": [
+                    "common"
+                ],
+                "summary": "Get city details",
+                "description": "Find the Zomato ID and other details for a city . You can obtain the Zomato City ID in one of the following ways:<br><ol> <li>City Name in the Search Query - Returns list of cities matching the query<li>Using coordinates - Identifies the city details based on the coordinates of any location inside a city</ol><p>If you already know the Zomato City ID, this API can be used to get other details of the city.</p>",
+                "operationId": "cities",
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "name": "user-key",
+                        "in": "header",
+                        "description": "your API key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "query by city name",
+                        "required": false,
+                        "type": "string",
+                        "collectionFormat": "csv"
+                    },
+                    {
+                        "name": "lat",
+                        "in": "query",
+                        "description": "latitude",
+                        "required": false,
+                        "type": "number"
+                    },
+                    {
+                        "name": "lon",
+                        "in": "query",
+                        "description": "longitude",
+                        "required": false,
+                        "type": "number"
+                    },
+                    {
+                        "name": "city_ids",
+                        "in": "query",
+                        "description": "comma separated city_id values",
+                        "required": false,
+                        "type": "string",
+                        "collectionFormat": "csv"
+                    },
+                    {
+                        "name": "count",
+                        "in": "query",
+                        "description": "number of max results to display",
+                        "required": false,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/City"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        },
+        "/establishments": {
+            "get": {
+                "tags": [
+                    "common"
+                ],
+                "summary": "Get list of restaurant types in a city",
+                "description": "Get a list of restaurant types in a city. The location/City input can be provided in the following ways -<br><ol><li>Using Zomato City ID<li>Using coordinates of any location within a city</ol><p>List of all restaurants categorized under a particular restaurant type can  obtained using /Search API with Establishment ID and location details as inputs</p>",
+                "operationId": "establishments",
+                "produces": [
+                    "application/xml",
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "user-key",
+                        "in": "header",
+                        "description": "your API key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "city_id",
+                        "in": "query",
+                        "description": "id of the city",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "lat",
+                        "in": "query",
+                        "description": "latitude / longitude of any point within a city",
+                        "required": false,
+                        "type": "number"
+                    },
+                    {
+                        "name": "lon",
+                        "in": "query",
+                        "description": "latitude / longitude of any point within a city",
+                        "required": false,
+                        "type": "number"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Establishment"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Invalid API key"
+                    }
+                }
+
+            }
+        },
+        "/geocode": {
+            "get": {
+                "tags": [
+                    "common"
+                ],
+                "summary": "Get location details based on coordinates",
+                "description": "Get Foodie and Nightlife Index, list of popular cuisines and nearby restaurants around the given coordinates",
+                "operationId": "geocode",
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "name": "user-key",
+                        "in": "header",
+                        "description": "your API key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "lat",
+                        "in": "query",
+                        "description": "latitude",
+                        "required": true,
+                        "type": "number"
+                    },
+                    {
+                        "name": "lon",
+                        "in": "query",
+                        "description": "longitude",
+                        "required": true,
+                        "type": "number"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/Geocode"
+                        }
+                    }
+                }
+            }
+        },
+        "/categories": {
+            "get": {
+                "tags": [
+                    "common"
+                ],
+                "summary": "Get list of Categories",
+                "description": "Get a list of categories. List of all restaurants categorized under a particular restaurant type can  be obtained using /Search API with Category ID as inputs</p>",
+                "operationId": "categories",
+                "produces": [
+                   "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "name": "user-key",
+                        "in": "header",
+                        "description": "your API key",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Categories"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Invalid  key"
+                    }
+                }
+            }
+        },
+        "/restaurant": {
+            "get": {
+                "tags": [
+                    "restaurant"
+                ],
+                "summary": "Get restaurant details",
+                "description": "Get detailed restaurant information using Zomato restaurant ID. Partner Access is required to access photos and reviews.",
+                "operationId": "restaurant",
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "name": "user-key",
+                        "in": "header",
+                        "description": "your API key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "res_id",
+                        "description": "id of restaurant whose details are requested",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/RestaurantL3"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid res_id"
+                    }
+                }
+            }
+        },
+        "/dailymenu": {
+            "get": {
+                "tags": [
+                    "restaurant"
+                ],
+                "summary": "Get daily menu of a restaurant",
+                "description": "Get daily menu using Zomato restaurant ID.",
+                "operationId": "dailymenu",
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "name": "user_key",
+                        "in": "header",
+                        "description": "your API key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "res_id",
+                        "description": "id of restaurant whose details are requested",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/DailyMenu"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid res_id"
+                    }
+                }
+            }
+        },
+        "/reviews": {
+            "get": {
+                "tags": [
+                    "restaurant"
+                ],
+                "summary": "Get restaurant reviews",
+                "description": "Get restaurant reviews using the Zomato restaurant ID. Only 5 latest reviews are available under the Basic API plan.",
+                "operationId": "reviews",
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "name": "user-key",
+                        "in": "header",
+                        "description": "your API key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "res_id",
+                        "description": "id of restaurant whose details are requested",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "in": "query",
+                        "name": "start",
+                        "description": "fetch results after this offset",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "in": "query",
+                        "name": "count",
+                        "description": "max number of results to retrieve",
+                        "required": false,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Review"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid res_id"
+                    }
+                }
+            }
+        },
+        "/search": {
+            "get": {
+                "tags": [
+                    "restaurant"
+                ],
+                "summary": "Search for restaurants",
+                "description": "The location input can be specified using Zomato location ID or coordinates. Cuisine / Establishment / Collection IDs can be obtained from respective api calls. Get up to 100 restaurants by changing the 'start' and 'count' parameters with the maximum value of count being 20. Partner Access is required to access photos and reviews.<br>Examples:<ol> <li> To search for 'Italian' restaurants in 'Manhattan, New York City', set cuisines = 55, entity_id = 94741 and entity_type = zone</li><li>To search for 'cafes' in 'Manhattan, New York City', set establishment_type = 1, entity_type = zone and entity_id = 94741 </li><li>Get list of all restaurants in 'Trending this Week' collection in 'New York City' by using entity_id = 280, entity_type = city and collection_id = 1</ol>",
+                "operationId": "search",
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "name": "user-key",
+                        "in": "header",
+                        "description": "your API key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "entity_id",
+                        "in": "query",
+                        "description": "location id",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "entity_type",
+                        "in": "query",
+                        "description": "location type",
+                        "required": false,
+                        "type": "string",
+                        "enum": [
+                            "city",
+                            "subzone",
+                            "zone",
+                            "landmark",
+                            "metro",
+                            "group"
+                        ]
+                    },
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "search keyword",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "start",
+                        "in": "query",
+                        "description": "fetch results after offset",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "count",
+                        "in": "query",
+                        "description": "max number of results to display",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "lat",
+                        "in": "query",
+                        "description": "latitude",
+                        "required": false,
+                        "type": "number"
+                    },
+                    {
+                        "name": "lon",
+                        "in": "query",
+                        "description": "longitude",
+                        "required": false,
+                        "type": "number"
+                    },
+                    {
+                        "name": "radius",
+                        "in": "query",
+                        "description": "radius around (lat,lon); to define search area, defined in meters(M)",
+                        "required": false,
+                        "type": "number"
+                    },
+                    {
+                        "name": "cuisines",
+                        "in": "query",
+                        "description": "list of cuisine id's separated by comma",
+                        "type": "string",
+                        "collectionFormat": "csv"
+                    },
+                    {
+                        "name": "establishment_type",
+                        "in": "query",
+                        "description": "estblishment id obtained from establishments call",
+                        "type": "string",
+                        "collectionFormat": "csv"
+                    },
+                    {
+                        "name": "collection_id",
+                        "in": "query",
+                        "description": "collection id obtained from collections call",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "category",
+                        "in": "query",
+                        "description": "category ids obtained from categories call",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "description": "sort restaurants by ...",
+                        "required": false,
+                        "type": "string",
+                        "enum": [
+                            "cost",
+                            "rating",
+                            "real_distance"
+                        ]
+                    },
+                    {
+                        "name": "order",
+                        "in": "query",
+                        "description": "used with 'sort' parameter to define ascending / descending",
+                        "required": false,
+                        "type": "string",
+                        "enum": [
+                            "asc",
+                            "desc"
+                        ]
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/Search"
+                        }
+                    },
+                    "400": {
+                        "description": "failed"
+                    }
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "petstore_auth": {
+            "type": "oauth2",
+            "authorizationUrl": "http://petstore.swagger.io/api/oauth/dialog",
+            "flow": "implicit",
+            "scopes": {
+                "write:pets": "modify pets in your account",
+                "read:pets": "read your pets"
+            }
+        },
+        "api_key": {
+            "type": "apiKey",
+            "name": "api_key",
+            "in": "header"
+        }
+    },
+    "definitions": {
+        "Order": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "petId": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "quantity": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "shipDate": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "status": {
+                    "type": "string",
+                    "description": "Order Status",
+                    "enum": [
+                        "placed",
+                        "approved",
+                        "delivered"
+                    ]
+                },
+                "complete": {
+                    "type": "boolean",
+                    "default": false
+                }
+            },
+            "xml": {
+                "name": "Order"
+            }
+        },
+        "Category": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "name": {
+                    "type": "string"
+                }
+            },
+            "xml": {
+                "name": "Category"
+            }
+        },
+        "User": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "John Doe",
+                    "description": "User's name"
+                },
+                "zomato_handle": {
+                    "type": "string",
+                    "example": "John",
+                    "description": "User's @handle; uniquely identifies a user on Zomato"
+                },
+                "foodie_level": {
+                    "type": "string",
+                    "example": "Super Foodie",
+                    "description": "Text for user's foodie level"
+                },
+                "foodie_level_num": {
+                    "type": "integer",
+                    "example": "9",
+                    "description": "Number to identify user's foodie level; ranges from 0 to 10"
+                },
+                "foodie_color": {
+                    "type": "string",
+                    "example": "f58552",
+                    "description": "Color hex code used with foodie level on Zomato"
+                },
+                "profile_url": {
+                    "type": "string",
+                    "example": "https://www.zomato.com/john",
+                    "description": "URL for user's profile on Zomato"
+                },
+                "profile_deeplink": {
+                    "type": "string",
+                    "example": "zoma.to/u/1170245",
+                    "description": "short URL for user's profile on Zomato; for use in apps or social sharing"
+                },
+                "profile_image": {
+                    "type": "string",
+                    "description": "URL for user's profile image"
+                }
+            }
+        },
+        "Tag": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "name": {
+                    "type": "string"
+                }
+            },
+            "xml": {
+                "name": "Tag"
+            }
+        },
+        "Cuisine": {
+            "type": "object",
+            "required": [
+                "cuisine_id",
+                "cuisine_name"
+            ],
+            "properties": {
+                "cuisine_id": {
+                    "type": "integer",
+                    "example": "25",
+                    "description": "ID of the cuisine"
+                },
+                "cuisine_name": {
+                    "type": "string",
+                    "example": "Chinese",
+                    "description": "Name of the cuisine"
+                }
+            },
+            "xml": {
+                "name": "Cuisine"
+            }
+        },
+        "Establishment": {
+            "type": "object",
+            "required": [
+                "establishment_id",
+                "establishment_name"
+            ],
+            "properties": {
+                "establishment_id": {
+                    "type": "integer",
+                    "example": "31",
+                    "description": "ID of the establishment type"
+                },
+                "establishment_name": {
+                    "type": "string",
+                    "example": "Bakery",
+                    "description": "Name of the establishment type"
+                }
+            },
+            "xml": {
+                "name": "Establishment"
+            }
+        },
+        "Locality": {
+            "type": "object",
+            "required": [
+                "name",
+                "city_name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "Chelsea",
+                    "description": "Name of locality (subzone)"
+                },
+                "city_name": {
+                    "type": "string",
+                    "example": "New York City",
+                    "description": "Name of city"
+                },
+                "real_city_name": {
+                    "type": "string",
+                    "example": "New York City",
+                    "description": "Actual city name; can be different from city_name in some cases"
+                },
+                "city_id": {
+                    "type": "integer",
+                    "example": "280",
+                    "description": "ID of city; corresponds to city_name"
+                },
+                "subzone_id": {
+                    "type": "integer",
+                    "example": "114178",
+                    "description": "ID of locality (subzone)"
+                }
+            },
+            "xml": {
+                "name": "Establishment"
+            }
+        },
+        "ResLocation": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string",
+                    "example": "1 5th Avenue, New York, NY 10003",
+                    "description": "Complete address of the restaurant"
+                },
+                "locality": {
+                    "type": "string",
+                    "example": "Greenwich Village",
+                    "description": "Name of the locality"
+                },
+                "city": {
+                    "type": "string",
+                    "example": "New York City",
+                    "description": "Name of the city"
+                },
+                "latitude": {
+                    "type": "number",
+                    "example": "40.732013",
+                    "description": "Coordinates of the restaurant"
+                },
+                "longitude": {
+                    "type": "number",
+                    "example": "-73.996155",
+                    "description": "Coordinates of the restaurant"
+                },
+                "zipcode": {
+                    "type": "string",
+                    "example": "10003",
+                    "description": "Zipcode"
+                },
+                "country_id": {
+                    "type": "integer",
+                    "example": "216",
+                    "description": "ID of the country"
+                }
+            }
+        },
+        "Location": {
+            "type": "object",
+            "properties": {
+                "entity_type": {
+                    "type": "string",
+                    "example": "group",
+                    "description": "Type of location; one of [city, zone, subzone, landmark, group, metro, street]"
+                },
+                "entity_id": {
+                    "type": "integer",
+                    "example": "36932",
+                    "description": "ID of location; (entity_id, entity_type) tuple uniquely identifies a location"
+                },
+                "title": {
+                    "type": "string",
+                    "example": "Chelsea Market, Chelsea, New York City",
+                    "description": "Name of the location"
+                },
+                "latitude": {
+                    "type": "number",
+                    "example": "40.742051",
+                    "description": "Coordinates of the (centre of) location"
+                },
+                "longitude": {
+                    "type": "number",
+                    "example": "-74.004821",
+                    "description": "Coordinates of the (centre of) location"
+                },
+                "city_id": {
+                    "type": "integer",
+                    "example": "280",
+                    "description": "ID of city"
+                },
+                "city_name": {
+                    "type": "string",
+                    "example": "New York City",
+                    "description": "Name of the city"
+                },
+                "country_id": {
+                    "type": "integer",
+                    "example": "216",
+                    "description": "ID of country"
+                },
+                "country_name": {
+                    "type": "string",
+                    "example": "United States",
+                    "description": "Name of the country"
+                }
+            }
+        },
+        "Popularity": {
+            "type": "object",
+            "required": [
+                "popularity",
+                "nightlife_index"
+            ],
+            "properties": {
+                "popularity": {
+                    "type": "number",
+                    "example": "4.92",
+                    "description": "Foodie index of a location out of 5.00"
+                },
+                "nightlife_index": {
+                    "type": "number",
+                    "example": "4.95",
+                    "description": "Nightlife index of a location out of 5.00"
+                },
+                "top_cuisines": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "example": "cafe"
+                    },
+                    "description": "Most popular cuisines in the locality"
+                }
+            },
+            "xml": {
+                "name": "Establishment"
+            }
+        },
+        "Geocode": {
+            "type": "object",
+            "properties": {
+                "locality": {
+                    "type": "object",
+                    "$ref": "#/definitions/Location"
+                },
+                "popularity": {
+                    "type": "object",
+                    "$ref": "#/definitions/Popularity"
+                },
+                "link": {
+                    "type": "string",
+                    "example": "https://www.zomato.com/new-york-city/chelsea-restaurants",
+                    "description": "URL of the web search page of the locality"
+                },
+                "nearby_restaurants": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/RestaurantL3"
+                    },
+                    "description": "list of nearby restaurants"
+                }
+            }
+        },
+        "Categories": {
+            "type": "object",
+            "required": [
+                "category_id",
+                "category_name"
+            ],
+            "properties": {
+                "category_id": {
+                    "type": "integer",
+                    "example": "3",
+                    "description": "ID of the category type"
+                },
+                "category_name": {
+                    "type": "string",
+                    "example": "Nightlife",
+                    "description": "Name of the category type"
+                }
+            },
+            "xml": {
+                "name": "Categories"
+            }
+        },
+        "LocationDetails": {
+            "type": "object",
+            "properties": {
+                "popularity": {
+                    "type": "object",
+                    "$ref": "#/definitions/Popularity"
+                },
+                "location": {
+                    "type": "object",
+                    "$ref": "#/definitions/Location",
+                    "description": "location struct"
+                },
+                "best_rated_restaurants": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/RestaurantL3"
+                    },
+                    "description": "list of top rated restaurants in location"
+                }
+            }
+        },
+        "PopularityLoc": {
+            "allOf": [
+            {
+                "$ref": "#/definitions/Popularity"
+            },
+            {
+                "type": "object",
+                "properties": {
+                    "nearby_restaurants": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/RestaurantL3"
+                        },
+                        "description": "popular restaurants around the provided coordinates"
+                    },
+                    "link": {
+                        "type": "string",
+                        "example": "https://www.zomato.com/new-york-city/chelsea-restaurants",
+                        "description": "URL to web search page of locality"
+                    }
+                }
+            }
+            ]
+        },
+        "Search": {
+            "type": "object",
+            "properties": {
+                "results_found": {
+                    "type": "integer",
+                    "example": "53",
+                    "description": "Number of results found"
+                },
+                "results_start": {
+                    "type": "integer",
+                    "example": "11",
+                    "description": "The starting location within results from which the results were fetched (used for pagination) "
+                },
+                "results_shown": {
+                    "type": "integer",
+                    "example": "10",
+                    "description": "The number of results fetched (used for pagination)"
+                },
+                "restaurants": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/RestaurantL3"
+                    }
+                }
+            }
+        },
+        "Restaurant": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "example": "16774318",
+                    "description": "ID of the restaurant"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Otto Enoteca & Pizzeria",
+                    "description": "Name of the restaurant"
+                },
+                "url": {
+                    "type": "string",
+                    "example": "https://www.zomato.com/new-york-city/otto-enoteca-pizzeria-greenwich-village",
+                    "description": "URL of the restaurant page"
+                },
+                "location": {
+                    "type": "object",
+                    "$ref": "#/definitions/ResLocation",
+                    "description": "Restaurant location details"
+                },
+                "average_cost_for_two": {
+                    "type": "integer",
+                    "example": "60",
+                    "description": "Average price of a meal for two people"
+                },
+                "price_range": {
+                    "type": "integer",
+                    "example": "2",
+                    "description": "Price bracket of the restaurant (1 being pocket friendly and 4 being the costliest)"
+                },
+                "currency": {
+                    "type": "string",
+                    "example": "$",
+                    "description": "Local currency symbol; to be used with price"
+                },
+                "thumb": {
+                    "type": "string",
+                    "example": "https://b.zmtcdn.com/data/pictures/chains/8/16774318/a54deb9e4dbb79dd7c8091b30c642077_featured_thumb.png",
+                    "description": "URL of the low resolution header image of restaurant"
+                },
+                "featured_image" : {
+                    "type": "string",
+                    "example": "https://d.zmtcdn.com/data/pictures/chains/8/16774318/a54deb9e4dbb79dd7c8091b30c642077_featured_v2.png",
+                    "description": "URL of the high resolution header image of restaurant"
+                },
+                "photos_url": {
+                    "type": "string",
+                    "example": "https://www.zomato.com/new-york-city/otto-enoteca-pizzeria-greenwich-village/photos#tabtop",
+                    "description": "URL of the restaurant's photos page"
+                },
+                "menu_url": {
+                    "type": "string",
+                    "example": "https://www.zomato.com/new-york-city/otto-enoteca-pizzeria-greenwich-village/menu#tabtop",
+                    "description": "URL of the restaurant's menu page"
+                },
+                "events_url": {
+                    "type": "string",
+                    "example": "https://www.zomato.com/new-york-city/otto-enoteca-pizzeria-greenwich-village/events#tabtop",
+                    "description": "URL of the restaurant's events page"
+                },
+                "user_rating": {
+                    "type": "object",
+                    "$ref": "#/definitions/UserRating",
+                    "description": "Restaurant rating details"
+                },
+                "has_online_delivery": {
+                    "type": "boolean",
+                    "example": "0",
+                    "description": "Whether the restaurant has online delivery enabled or not"
+                },
+                "is_delivering_now": {
+                    "type": "boolean",
+                    "example": "0",
+                    "description": "Valid only if has_online_delivery = 1; whether the restaurant is accepting online orders right now"
+                },
+                "has_table_booking": {
+                    "type": "boolean",
+                    "example": "0",
+                    "description": "Whether the restaurant has table reservation enabled or not"
+                },
+                "deeplink": {
+                    "type": "string",
+                    "example": "zomato://r/16774318",
+                    "description": "Short URL of the restaurant page; for use in apps or social shares"
+                }
+            }
+        },
+        "RestaurantL3": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Restaurant"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "cuisines": {
+                            "type": "string",
+                            "example": "Cafe",
+                            "description": "List of cuisines served at the restaurant in csv format"
+                        },
+                        "all_reviews_count": {
+                            "type": "integer",
+                            "example": "15",
+                            "description": "<b>[Partner access]</b> Number of reviews for the restaurant"
+                        },
+                        "photo_count": {
+                            "type": "integer",
+                            "example": "18",
+                            "description": "<b>[Partner access]</b> Total number of photos for the restaurant, at max 10 photos for partner access"
+                        },
+                        "phone_numbers": {
+                            "type": "string",
+                            "example": "(212) 228-2930",
+                            "description": "<b>[Partner access]</b> Restaurant's contact numbers in csv format"
+                        },
+                        "photos": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Photo"
+                            },
+                            "description": "<b>[Partner access]</b> List of restaurant photos"
+                        },
+                        "all_reviews": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Review"
+                            },
+                            "description": "<b>[Partner access]</b> List of restaurant reviews"
+                        }
+                    }
+                }
+            ]
+        },
+        "DailyMenuCategory": {
+            "type": "object",
+            "properties": {
+                "daily_menu_id": {
+                    "type": "integer",
+                    "example": "16507624",
+                    "description": "ID of the restaurant"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Vinohradský pivovar",
+                    "description": "Name of the restaurant"
+                },
+                "start_date": {
+                            "type": "string",
+                            "example": "2016-03-08 11:00",
+                            "description": "Daily Menu start timestamp"
+                },
+                "end_date": {
+                            "type": "string",
+                            "example": "2016-03-08 15:00",
+                            "description": "Daily Menu end timestamp"
+                },
+                "dishes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/DailyMenuItem"
+                    },
+                    "description": "Menu item in the category"
+                }
+            }
+        },
+        "DailyMenuItem": {
+            "type": "object",
+            "properties": {
+                "dish_id": {
+                    "type": "integer",
+                    "example": "104089345",
+                    "description": "Menu Item ID "
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Tatarák ze sumce s toustem",
+                    "description": "Menu Item Title"
+                },
+                "price": {
+                    "type": "string",
+                    "example": "149 Kč",
+                    "description": "Menu Item Price"
+                }
+            }
+        },
+        "DailyMenu": {
+            "type": "object",
+            "properties": {
+                "daily_menu": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/DailyMenuCategory"
+                    },
+                    "description": " List of restaurant's menu details"
+                }
+            }
+        },
+        "Photo": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "example": "u_MjA5MjY1OTk5OT",
+                    "description": "ID of the photo"
+                },
+                "url": {
+                    "type": "string",
+                    "example": "https://b.zmtcdn.com/data/reviews_photos/c15/9eb13ceaf6e90129c276ce6ff980bc15_1435111695_640_640_thumb.JPG",
+                    "description": "URL of the image file"
+                },
+                "thumb_url": {
+                    "type": "string",
+                    "example": "https://b.zmtcdn.com/data/reviews_photos/c15/9eb13ceaf6e90129c276ce6ff980bc15_1435111695_200_thumb.JPG",
+                    "description": "URL for 200 X 200 thumb image file"
+                },
+                "user": {
+                    "type": "object",
+                    "$ref": "#/definitions/User",
+                    "description": "User who uploaded the photo"
+                },
+                "res_id": {
+                    "type": "integer",
+                    "example": "16782899",
+                    "description": "ID of restaurant for which the image was uploaded"
+                },
+                "caption": {
+                    "type": "string",
+                    "example": "#awesome",
+                    "description": "Caption of the photo"
+                },
+                "timestamp": {
+                    "type": "integer",
+                    "example": "1435111770",
+                    "description": "Unix timestamp when the photo was uploaded"
+                },
+                "friendly_time": {
+                    "type": "string",
+                    "example": "3 months ago",
+                    "description": "User friendly time string; denotes when the photo was uploaded"
+                },
+                "width": {
+                    "type": "integer",
+                    "example": "640",
+                    "description": "Image width in pixel; usually 640"
+                },
+                "height": {
+                    "type": "integer",
+                    "example": "640",
+                    "description": "Image height in pixel; usually 640"
+                },
+                "comments_count": {
+                    "type": "integer",
+                    "example": "0",
+                    "description": "Number of comments on photo"
+                },
+                "likes_count": {
+                    "type": "integer",
+                    "example": "0",
+                    "description": "Number of likes on photo"
+                }
+            }
+        },
+        "Review": {
+            "type": "object",
+            "properties": {
+                "rating": {
+                    "type": "number",
+                    "example": "5",
+                    "description": "Rating on scale of 0 to 5 in increments of 0.5"
+                },
+                "review_text": {
+                    "type": "string",
+                    "example": "The best latte I've ever had. It tasted a little sweet",
+                    "description": "Review text"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": "24127336",
+                    "description": "ID of the review"
+                },
+                "rating_color": {
+                    "type": "string",
+                    "example": "305D02",
+                    "description": "Color hex code used with the rating on Zomato"
+                },
+                "review_time_friendly": {
+                    "type": "string",
+                    "example": "2 months ago",
+                    "description": "User friendly time string corresponding to time of review posting"
+                },
+                "rating_text": {
+                    "type": "string",
+                    "example": "Insane!",
+                    "description": "Short description of the rating"
+                },
+                "timestamp": {
+                    "type": "integer",
+                    "example": "1435507367",
+                    "description": "Unix timestamp for review_time_friendly"
+                },
+                "likes": {
+                    "type": "integer",
+                    "example": "0",
+                    "description": "No of likes received for review"
+                },
+                "user": {
+                    "type": "object",
+                    "$ref": "#/definitions/User",
+                    "description": "User details of author of review"
+                },
+                "comments_count": {
+                    "type": "integer",
+                    "example": "0",
+                    "description": "No of comments on review"
+                }
+            }
+        },
+        "UserRating": {
+            "type": "object",
+            "properties": {
+                "aggregate_rating": {
+                    "type": "number",
+                    "example": "3.7",
+                    "description": "Restaurant rating on a scale of 0.0 to 5.0 in increments of 0.1"
+                },
+                "rating_text": {
+                    "type": "string",
+                    "example": "Very Good",
+                    "description": "Short description of the rating"
+                },
+                "rating_color": {
+                    "type": "string",
+                    "example": "5BA829",
+                    "description": "Color hex code used with the rating on Zomato"
+                },
+                "votes": {
+                    "type": "integer",
+                    "example": "1046",
+                    "description": "Number of ratings received"
+                }
+            }
+        },
+        "Zone": {
+            "type": "object",
+            "properties": {
+                "zone_id": {
+                    "type": "integer",
+                    "example": "31",
+                    "description": "ID of zone"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "South Delhi",
+                    "description": "Name of the zone"
+                },
+                "city_id": {
+                    "type": "integer",
+                    "example": "1",
+                    "description": "ID of city where zone lies"
+                }
+            }
+        },
+        "Subzone": {
+            "type": "object",
+            "properties": {
+                "subzone_id": {
+                    "type": "integer",
+                    "example": "23",
+                    "description": "ID of subzone"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Saket",
+                    "description": "Name of the subzone"
+                },
+                "zone_id": {
+                    "type": "integer",
+                    "example": "4",
+                    "description": "ID of the zone where subzone lies"
+                }
+            }
+        },
+        "Collection": {
+            "type": "object",
+            "properties": {
+                "collection_id": {
+                    "type": "integer",
+                    "example": "1",
+                    "description": "ID of the collection of restaurants"
+                },
+                "title": {
+                    "type": "string",
+                    "example": "Trending this week",
+                    "description": "Collection name"
+                },
+                "url": {
+                    "type": "string",
+                    "example": "https://www.zomato.com/new-york-city/top-restaurants",
+                    "description": "URL of the collection page"
+                },
+                "description": {
+                    "type": "string",
+                    "example": "The most popular restaurants in town this week",
+                    "description": "Short description of the collection"
+                },
+                "image_url": {
+                    "type": "string",
+                    "example": "https://b.zmtcdn.com/data/collections/e40960514831cb9b74c552d69eceee0f_1418387628_l.jpg",
+                    "description": "URL for header image of the collection"
+                },
+                "res_count": {
+                    "type": "integer",
+                    "example": "30",
+                    "description": "Number of restaurants in the collection"
+                },
+                "share_url": {
+                    "type": "string",
+                    "example": "http://www.zoma.to/c-280/1",
+                    "description": "short URL for apps and social sharing"
+                }
+            },
+            "xml": {
+                "name": "Collection"
+            }
+        },
+        "City": {
+            "type": "object",
+            "required": [
+                "id",
+                "name"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "example": "280",
+                    "description": "ID of the city"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "New York City, NY",
+                    "description": "City name"
+                },
+                "country_id": {
+                    "type": "integer",
+                    "example": "216",
+                    "description": "ID of the country"
+                },
+                "country_name": {
+                    "type": "string",
+                    "example": "United States",
+                    "description": "Name of the country"
+                },
+                "is_state": {
+                    "type": "boolean",
+                    "example": "0",
+                    "description": "Whether this location is a state"
+                },
+                "state_id": {
+                    "type": "integer",
+                    "example": "103",
+                    "description": "ID of the state"
+                },
+                "state_name": {
+                    "type": "string",
+                    "example": "New York State",
+                    "description": "Name of the state"
+                },
+                "state_code": {
+                    "type": "string",
+                    "example": "NY",
+                    "description": "Short code for the state"
+                }
+            },
+            "xml": {
+                "name": "City"
+            }
+        },
+        "Pet": {
+            "type": "object",
+            "required": [
+                "name",
+                "photoUrls"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "category": {
+                    "$ref": "#/definitions/Category"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "doggie"
+                },
+                "photoUrls": {
+                    "type": "array",
+                    "xml": {
+                        "name": "photoUrl",
+                        "wrapped": true
+                    },
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "tags": {
+                    "type": "array",
+                    "xml": {
+                        "name": "tag",
+                        "wrapped": true
+                    },
+                    "items": {
+                        "$ref": "#/definitions/Tag"
+                    }
+                },
+                "status": {
+                    "type": "string",
+                    "description": "pet status in the store",
+                    "enum": [
+                        "available",
+                        "pending",
+                        "sold"
+                    ]
+                }
+            },
+            "xml": {
+                "name": "Pet"
+            }
+        },
+        "ApiResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "externalDocs": {
+        "description": "See where your friends are dining",
+        "url": "https://www.zomato.com"
+    }
+}
