@@ -1,6 +1,7 @@
 package zomato
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"strconv"
@@ -97,6 +98,16 @@ func (d *DailyMenu) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// DailyMenu gets daily menu using Zomato restaurant ID.
+func (c Client) DailyMenu(ctx context.Context, restaurantID int64) (resp DailyMenuResp, err error) {
+	if c.Auth == nil {
+		return resp, ErrNoAuth
+	}
+
+	err = c.Do(c.Auth(WithCtx(ctx, DailyMenuReq{RestaurantID: restaurantID})), &resp)
+	return resp, errors.Wrap(err, "Client.Do failed")
+}
+
 // RestaurantReq parameters
 type RestaurantReq struct {
 	// ID of restaurant whose details are requested
@@ -121,6 +132,19 @@ func (r RestaurantReq) Request() (*http.Request, error) {
 	}
 
 	return http.NewRequest(http.MethodGet, urlStr, nil)
+}
+
+// Restaurant gets restaurant details.
+//
+// Get detailed restaurant information using Zomato restaurant ID.
+// Partner Access is required to access photos and reviews.
+func (c Client) Restaurant(ctx context.Context, restaurantID int64) (resp Restaurant, err error) {
+	if c.Auth == nil {
+		return resp, ErrNoAuth
+	}
+
+	err = c.Do(c.Auth(WithCtx(ctx, RestaurantReq{RestaurantID: restaurantID})), &resp)
+	return resp, errors.Wrap(err, "Client.Do failed")
 }
 
 // Restaurant holds a restaurant details
@@ -562,4 +586,17 @@ func (r *Review) UnmarshalJSON(data []byte) error {
 		r.CommentsCount = &cc
 	}
 	return nil
+}
+
+// Reviews gets restaurant reviews.
+//
+// Get restaurant reviews using the Zomato restaurant ID.
+// Only 5 latest reviews are available under the Basic API plan.
+func (c Client) Reviews(ctx context.Context, req ReviewsReq) (resp ReviewsResp, err error) {
+	if c.Auth == nil {
+		return resp, ErrNoAuth
+	}
+
+	err = c.Do(c.Auth(WithCtx(ctx, req)), &resp)
+	return resp, errors.Wrap(err, "Client.Do failed")
 }

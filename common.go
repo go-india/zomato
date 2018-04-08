@@ -1,6 +1,7 @@
 package zomato
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"strconv"
@@ -29,6 +30,19 @@ type CategoriesResp struct {
 	Categories []struct {
 		Categorie *Categorie `json:"categories,omitempty"`
 	} `json:"categories,omitempty"`
+}
+
+// Categories gets a list of categories.
+//
+// List of all restaurants categorized under a particular restaurant type can
+// be obtained using /Search API with Category ID as inputs
+func (c Client) Categories(ctx context.Context) (resp CategoriesResp, err error) {
+	if c.Auth == nil {
+		return resp, ErrNoAuth
+	}
+
+	err = c.Do(c.Auth(WithCtx(ctx, CategoriesReq{})), &resp)
+	return resp, errors.Wrap(err, "Client.Do failed")
 }
 
 // CitiesReq parameters
@@ -122,6 +136,24 @@ func (c *CitiesResp) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// Cities gets city details.
+//
+// Find the Zomato ID and other details for a city.
+// You can obtain the Zomato City ID in one of the following ways:
+//
+// 		City Name in the Search Query - Returns list of cities matching the query
+// 		Using coordinates - Identifies the city details based on the coordinates of any location inside a city
+//
+// If you already know the Zomato City ID, this API can be used to get other details of the city.
+func (c Client) Cities(ctx context.Context, req CitiesReq) (resp CitiesResp, err error) {
+	if c.Auth == nil {
+		return resp, ErrNoAuth
+	}
+
+	err = c.Do(c.Auth(WithCtx(ctx, req)), &resp)
+	return resp, errors.Wrap(err, "Client.Do failed")
+}
+
 // CollectionsReq parameters
 type CollectionsReq struct {
 	CityID    int64   `url:"city_id,omitempty"` // id of the city for which collections are needed
@@ -185,6 +217,24 @@ func (c *CollectionsResp) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// Collections returns Zomato Restaurant Collections in a City.
+//
+// The location/City input can be provided in the following ways:
+//
+// 		Using Zomato City ID
+//		Using coordinates of any location within a city
+//
+// List of all restaurants listed in any particular Zomato Collection can be
+// obtained using the '/search' API with Collection ID and Zomato City ID as the input
+func (c Client) Collections(ctx context.Context, req CollectionsReq) (resp CollectionsResp, err error) {
+	if c.Auth == nil {
+		return resp, ErrNoAuth
+	}
+
+	err = c.Do(c.Auth(WithCtx(ctx, req)), &resp)
+	return resp, errors.Wrap(err, "Client.Do failed")
+}
+
 // CuisinesReq parameters
 type CuisinesReq struct {
 	CityID    int64   `url:"city_id,omitempty"` // id of the city for which cuisines are needed
@@ -220,6 +270,24 @@ type CuisinesResp struct {
 	} `json:"cuisines,omitempty"`
 }
 
+// Cuisines gets a list of all cuisines of restaurants listed in a city.
+//
+// The location/City input can be provided in the following ways:
+//
+// 		Using Zomato City ID
+//		Using coordinates of any location within a city
+//
+// List of all restaurants serving a particular cuisine can be obtained
+// using '/search' API with cuisine ID and location details
+func (c Client) Cuisines(ctx context.Context, req CuisinesReq) (resp CuisinesResp, err error) {
+	if c.Auth == nil {
+		return resp, ErrNoAuth
+	}
+
+	err = c.Do(c.Auth(WithCtx(ctx, req)), &resp)
+	return resp, errors.Wrap(err, "Client.Do failed")
+}
+
 // EstablishmentsReq parameters
 type EstablishmentsReq struct {
 	CityID    int64   `url:"city_id,omitempty"` // id of the city
@@ -253,6 +321,24 @@ type EstablishmentsResp struct {
 	Establishments []struct {
 		Establishment *Establishment `json:"establishment,omitempty"`
 	} `json:"establishments,omitempty"`
+}
+
+// Establishments gets a list of restaurant types in a city.
+//
+// The location/City input can be provided in the following ways:
+//
+// 		Using Zomato City ID
+//		Using coordinates of any location within a city
+//
+// List of all restaurants categorized under a particular restaurant type can
+// be obtained using /Search API with Establishment ID and location details as inputs.
+func (c Client) Establishments(ctx context.Context, req EstablishmentsReq) (resp EstablishmentsResp, err error) {
+	if c.Auth == nil {
+		return resp, ErrNoAuth
+	}
+
+	err = c.Do(c.Auth(WithCtx(ctx, req)), &resp)
+	return resp, errors.Wrap(err, "Client.Do failed")
 }
 
 // GeoCodeReq parameters
@@ -328,4 +414,17 @@ func (p *Popularity) UnmarshalJSON(data []byte) error {
 		}
 	}
 	return nil
+}
+
+// GeoCode gets location details based on coordinates.
+//
+// Get Foodie and Nightlife Index, list of popular cuisines and nearby
+// restaurants around the given coordinates
+func (c Client) GeoCode(ctx context.Context, lat, long float64) (resp GeoCodeResp, err error) {
+	if c.Auth == nil {
+		return resp, ErrNoAuth
+	}
+
+	err = c.Do(c.Auth(WithCtx(ctx, GeoCodeReq{Latitude: lat, Longitude: long})), &resp)
+	return resp, errors.Wrap(err, "Client.Do failed")
 }

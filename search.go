@@ -1,6 +1,7 @@
 package zomato
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/google/go-querystring/query"
@@ -62,4 +63,28 @@ type SearchResp struct {
 	Restaurants []struct {
 		Restaurant *Restaurant `json:"restaurant,omitempty"`
 	} `json:"restaurants,omitempty"`
+}
+
+// Search provides search for restaurants.
+//
+// The location input can be specified using Zomato location ID or coordinates.
+// Cuisine/Establishment/Collection IDs can be obtained from respective API calls.
+//
+// Get up to 100 restaurants by changing the 'start' and 'count' parameters with
+// the maximum value of count being 20.
+//
+// Examples:
+//
+// 		To search for 'Italian' restaurants in 'Manhattan, New York City', set cuisines = 55, entity_id = 94741 and entity_type = zone
+// 		To search for 'cafes' in 'Manhattan, New York City', set establishment_type = 1, entity_type = zone and entity_id = 94741
+// 		Get list of all restaurants in 'Trending this Week' collection in 'New York City' by using entity_id = 280, entity_type = city and collection_id = 1
+//
+// Partner Access is required to access photos and reviews.
+func (c Client) Search(ctx context.Context, req SearchReq) (resp SearchResp, err error) {
+	if c.Auth == nil {
+		return resp, ErrNoAuth
+	}
+
+	err = c.Do(c.Auth(WithCtx(ctx, req)), &resp)
+	return resp, errors.Wrap(err, "Client.Do failed")
 }

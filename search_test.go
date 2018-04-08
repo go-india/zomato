@@ -1,15 +1,14 @@
 package zomato_test
 
 import (
+	"context"
 	"testing"
 
 	"github.com/go-india/zomato"
 )
 
 func TestSearch(t *testing.T) {
-	c := zomato.Client{
-		Auth: zomato.NewAuth(getAPIKey()),
-	}
+	c := zomato.NewClient(getAPIKey())
 	testClient(&c, t)
 
 	req := zomato.SearchReq{
@@ -28,10 +27,9 @@ func TestSearch(t *testing.T) {
 		Category:      "north",
 	}
 
-	var resp zomato.SearchResp
-	err := c.Do(c.Auth(req), &resp)
+	resp, err := c.Search(context.Background(), req)
 	if err != nil {
-		t.Fatalf("Do failed: %+v", err)
+		t.Fatalf("Search failed: %+v", err)
 	}
 
 	if resp.Restaurants == nil {

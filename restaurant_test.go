@@ -1,25 +1,19 @@
 package zomato_test
 
 import (
+	"context"
 	"testing"
 
 	"github.com/go-india/zomato"
 )
 
 func TestDailyMenu(t *testing.T) {
-	c := zomato.Client{
-		Auth: zomato.NewAuth(getAPIKey()),
-	}
+	c := zomato.NewClient(getAPIKey())
 	testClient(&c, t)
 
-	req := zomato.DailyMenuReq{
-		RestaurantID: 16514301,
-	}
-
-	var resp zomato.DailyMenuResp
-	err := c.Do(c.Auth(req), &resp)
+	resp, err := c.DailyMenu(context.Background(), 16514301)
 	if err != nil {
-		t.Fatalf("Do failed: %+v", err)
+		t.Fatalf("DailyMenu failed: %+v", err)
 	}
 
 	if resp.DailyMenus == nil {
@@ -28,19 +22,12 @@ func TestDailyMenu(t *testing.T) {
 }
 
 func TestRestaurant(t *testing.T) {
-	c := zomato.Client{
-		Auth: zomato.NewAuth(getAPIKey()),
-	}
+	c := zomato.NewClient(getAPIKey())
 	testClient(&c, t)
 
-	req := zomato.RestaurantReq{
-		RestaurantID: 463,
-	}
-
-	var resp zomato.Restaurant
-	err := c.Do(c.Auth(req), &resp)
+	resp, err := c.Restaurant(context.Background(), 463)
 	if err != nil {
-		t.Fatalf("Do failed: %+v", err)
+		t.Fatalf("Restaurant failed: %+v", err)
 	}
 
 	if resp.ID == nil {
@@ -49,9 +36,7 @@ func TestRestaurant(t *testing.T) {
 }
 
 func TestReviews(t *testing.T) {
-	c := zomato.Client{
-		Auth: zomato.NewAuth(getAPIKey()),
-	}
+	c := zomato.NewClient(getAPIKey())
 	testClient(&c, t)
 
 	req := zomato.ReviewsReq{
@@ -60,10 +45,9 @@ func TestReviews(t *testing.T) {
 		Count:        100,
 	}
 
-	var resp zomato.ReviewsResp
-	err := c.Do(c.Auth(req), &resp)
+	resp, err := c.Reviews(context.Background(), req)
 	if err != nil {
-		t.Fatalf("Do failed: %+v", err)
+		t.Fatalf("Reviews failed: %+v", err)
 	}
 
 	if resp.UserReviews == nil {

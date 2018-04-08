@@ -1,21 +1,19 @@
 package zomato_test
 
 import (
+	"context"
 	"testing"
 
 	"github.com/go-india/zomato"
 )
 
 func TestCategories(t *testing.T) {
-	c := zomato.Client{
-		Auth: zomato.NewAuth(getAPIKey()),
-	}
+	c := zomato.NewClient(getAPIKey())
 	testClient(&c, t)
 
-	var resp zomato.CategoriesResp
-	err := c.Do(c.Auth(zomato.CategoriesReq{}), &resp)
+	resp, err := c.Categories(context.Background())
 	if err != nil {
-		t.Fatalf("Do failed: %+v", err)
+		t.Fatalf("Categories failed: %+v", err)
 	}
 
 	if resp.Categories == nil {
@@ -24,9 +22,7 @@ func TestCategories(t *testing.T) {
 }
 
 func TestCities(t *testing.T) {
-	c := zomato.Client{
-		Auth: zomato.NewAuth(getAPIKey()),
-	}
+	c := zomato.NewClient(getAPIKey())
 	testClient(&c, t)
 
 	req := zomato.CitiesReq{
@@ -37,10 +33,9 @@ func TestCities(t *testing.T) {
 		Count:     100,
 	}
 
-	var resp zomato.CitiesResp
-	err := c.Do(c.Auth(req), &resp)
+	resp, err := c.Cities(context.Background(), req)
 	if err != nil {
-		t.Fatalf("Do failed: %+v", err)
+		t.Fatalf("Cities failed: %+v", err)
 	}
 
 	if resp.LocationSuggestions == nil {
@@ -49,9 +44,7 @@ func TestCities(t *testing.T) {
 }
 
 func TestCollections(t *testing.T) {
-	c := zomato.Client{
-		Auth: zomato.NewAuth(getAPIKey()),
-	}
+	c := zomato.NewClient(getAPIKey())
 	testClient(&c, t)
 
 	req := zomato.CollectionsReq{
@@ -61,10 +54,9 @@ func TestCollections(t *testing.T) {
 		Count:     100,
 	}
 
-	var resp zomato.CollectionsResp
-	err := c.Do(c.Auth(req), &resp)
+	resp, err := c.Collections(context.Background(), req)
 	if err != nil {
-		t.Fatalf("Do failed: %+v", err)
+		t.Fatalf("Collections failed: %+v", err)
 	}
 
 	if resp.Collections == nil {
@@ -73,9 +65,7 @@ func TestCollections(t *testing.T) {
 }
 
 func TestCuisines(t *testing.T) {
-	c := zomato.Client{
-		Auth: zomato.NewAuth(getAPIKey()),
-	}
+	c := zomato.NewClient(getAPIKey())
 	testClient(&c, t)
 
 	req := zomato.CuisinesReq{
@@ -84,10 +74,9 @@ func TestCuisines(t *testing.T) {
 		Longitude: 77.1025,
 	}
 
-	var resp zomato.CuisinesResp
-	err := c.Do(c.Auth(req), &resp)
+	resp, err := c.Cuisines(context.Background(), req)
 	if err != nil {
-		t.Fatalf("Do failed: %+v", err)
+		t.Fatalf("Cuisines failed: %+v", err)
 	}
 
 	if resp.Cuisines == nil {
@@ -96,9 +85,7 @@ func TestCuisines(t *testing.T) {
 }
 
 func TestEstablishments(t *testing.T) {
-	c := zomato.Client{
-		Auth: zomato.NewAuth(getAPIKey()),
-	}
+	c := zomato.NewClient(getAPIKey())
 	testClient(&c, t)
 
 	req := zomato.EstablishmentsReq{
@@ -107,10 +94,9 @@ func TestEstablishments(t *testing.T) {
 		Longitude: 77.1025,
 	}
 
-	var resp zomato.EstablishmentsResp
-	err := c.Do(c.Auth(req), &resp)
+	resp, err := c.Establishments(context.Background(), req)
 	if err != nil {
-		t.Fatalf("Do failed: %+v", err)
+		t.Fatalf("Establishments failed: %+v", err)
 	}
 
 	if resp.Establishments == nil {
@@ -119,20 +105,12 @@ func TestEstablishments(t *testing.T) {
 }
 
 func TestGeoCode(t *testing.T) {
-	c := zomato.Client{
-		Auth: zomato.NewAuth(getAPIKey()),
-	}
+	c := zomato.NewClient(getAPIKey())
 	testClient(&c, t)
 
-	req := zomato.GeoCodeReq{ // delhi
-		Latitude:  28.7041,
-		Longitude: 77.1025,
-	}
-
-	var resp zomato.GeoCodeResp
-	err := c.Do(c.Auth(req), &resp)
+	resp, err := c.GeoCode(context.Background(), 28.7041, 77.1025)
 	if err != nil {
-		t.Fatalf("Do failed: %+v", err)
+		t.Fatalf("GetCode failed: %+v", err)
 	}
 
 	if resp.NearbyRestaurants == nil {

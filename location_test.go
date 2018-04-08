@@ -1,26 +1,19 @@
 package zomato_test
 
 import (
+	"context"
 	"testing"
 
 	"github.com/go-india/zomato"
 )
 
 func TestLocationDetails(t *testing.T) {
-	c := zomato.Client{
-		Auth: zomato.NewAuth(getAPIKey()),
-	}
+	c := zomato.NewClient(getAPIKey())
 	testClient(&c, t)
 
-	req := zomato.LocationDetailsReq{
-		EntityID:   289,
-		EntityType: zomato.SubZone,
-	}
-
-	var resp zomato.LocationDetailsResp
-	err := c.Do(c.Auth(req), &resp)
+	resp, err := c.LocationDetails(context.Background(), 289, zomato.SubZone)
 	if err != nil {
-		t.Fatalf("Do failed: %+v", err)
+		t.Fatalf("LocationDetails failed: %+v", err)
 	}
 
 	if resp.BestRatedRestaurant == nil {
@@ -29,9 +22,7 @@ func TestLocationDetails(t *testing.T) {
 }
 
 func TestLocations(t *testing.T) {
-	c := zomato.Client{
-		Auth: zomato.NewAuth(getAPIKey()),
-	}
+	c := zomato.NewClient(getAPIKey())
 	testClient(&c, t)
 
 	req := zomato.LocationsReq{
@@ -41,10 +32,9 @@ func TestLocations(t *testing.T) {
 		Count:     100,
 	}
 
-	var resp zomato.LocationsResp
-	err := c.Do(c.Auth(req), &resp)
+	resp, err := c.Locations(context.Background(), req)
 	if err != nil {
-		t.Fatalf("Do failed: %+v", err)
+		t.Fatalf("Locations failed: %+v", err)
 	}
 
 	if resp.LocationSuggestions == nil {

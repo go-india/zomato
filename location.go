@@ -1,6 +1,7 @@
 package zomato
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 
@@ -104,6 +105,22 @@ func (l *Location) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// LocationDetails gets Zomato location details.
+//
+// Get Foodie Index, Nightlife Index, Top Cuisines and Best rated restaurants in a given location.
+func (c Client) LocationDetails(ctx context.Context,
+	entityID int64, entityType EntityType) (resp LocationDetailsResp, err error) {
+	if c.Auth == nil {
+		return resp, ErrNoAuth
+	}
+
+	err = c.Do(c.Auth(WithCtx(ctx, LocationDetailsReq{
+		EntityID:   entityID,
+		EntityType: entityType,
+	})), &resp)
+	return resp, errors.Wrap(err, "Client.Do failed")
+}
+
 // LocationsReq parameters
 type LocationsReq struct {
 	Query     string  `url:"query" validate:"required"` // suggestion for location name
@@ -156,4 +173,17 @@ func (l *LocationsResp) UnmarshalJSON(data []byte) error {
 	l.HasMore = newBool(t.HasMore == 1)
 	l.HasTotal = newBool(t.HasTotal == 1)
 	return nil
+}
+
+// Locations searchs for locations.
+//
+// Search for Zomato locations by keyword.
+// Provide coordinates to get better search results.
+func (c Client) Locations(ctx context.Context, req LocationsReq) (resp LocationsResp, err error) {
+	if c.Auth == nil {
+		return resp, ErrNoAuth
+	}
+
+	err = c.Do(c.Auth(WithCtx(ctx, req)), &resp)
+	return resp, errors.Wrap(err, "Client.Do failed")
 }
