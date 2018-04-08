@@ -2,11 +2,6 @@
 
 Swagger generates a [Go](http://golang.org/) client library for accessing [Zomato API](https://developers.zomato.com/api) using [Swagger Specifications](https://swagger.io/specification/) provided by [Zomato](https://developers.zomato.com/swagger.json).
 
-## Requirements
-
-* Unix or Linux based OS
-* Go 
-
 ## Usage
 
 To generate a client library from `swagger.json` file:

@@ -81,7 +81,7 @@ You can run integration tests from the directory.
 $ go test -v
 ```
 
-`Note`: Use `-update` flag to update the testdata. When using update flag, you will need to define `ZOMATO_TEST_API_KEY` in your environment for tests to use the API Key for testing.
+`Note` Use `-update` flag to update the testdata. When using update flag, you will need to define `ZOMATO_TEST_API_KEY` in your environment for tests to use the API Key for testing.
 
 ### Contributing
 
